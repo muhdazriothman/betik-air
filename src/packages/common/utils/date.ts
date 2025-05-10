@@ -57,7 +57,7 @@ export class DateValidator {
             throw new Error('Invalid referenceDate');
         }
 
-        return targetDate < referenceDate;
+        return targetDate <= referenceDate;
     }
 
     static getDaysBetweenDates(params: DaysBetweenDatesParams): number {
