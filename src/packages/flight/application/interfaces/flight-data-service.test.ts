@@ -1,5 +1,7 @@
 import { IFlightDataService, FlightSearchParams } from '@flight/application/interfaces/flight-data-service';
+
 import { Flight, FlightProps } from '@flight/domain/entities/flight';
+import { FlightDestination } from '@flight/domain/entities/flight-destination';
 
 describe('@flight/application/interfaces/flight-data-service', () => {
     let flightDataService: IFlightDataService;
@@ -8,11 +10,12 @@ describe('@flight/application/interfaces/flight-data-service', () => {
         // Mock implementation of IFlightDataService
         flightDataService = {
             searchFlight: jest.fn(),
+            getFlightDestinations: jest.fn(),
         };
     });
 
     describe('#searchFlight', () => {
-        it('should return a Flight object when valid search params are provided', async () => {
+        it('should return Flight data', async () => {
             const searchParams: FlightSearchParams = {
                 departureDate: '01-01-2024',
                 returnDate: '02-01-2024',
@@ -113,6 +116,38 @@ describe('@flight/application/interfaces/flight-data-service', () => {
 
             await expect(flightDataService.searchFlight(searchParams)).rejects.toThrow('Search failed');
             expect(flightDataService.searchFlight).toHaveBeenNthCalledWith(1, searchParams);
+        });
+    });
+
+    describe('#getFlightDestinations', () => {
+        it('should return flight destinations data', async () => {
+            const flightDestinations: FlightDestination[] = [
+                {
+                    locationId: '27537542',
+                    locationName: 'New York',
+                    locationCode: 'NYCA'
+                },
+                {
+                    locationId: '95565059',
+                    locationName: 'New York Newark',
+                    locationCode: 'EWR'
+                }
+            ];
+
+            jest.spyOn(flightDataService, 'getFlightDestinations').mockResolvedValue(flightDestinations);
+
+            const result = await flightDataService.getFlightDestinations();
+
+            expect(result).toEqual(flightDestinations);
+            expect(flightDataService.getFlightDestinations).toHaveBeenNthCalledWith(1);
+        });
+
+        it('should throw an error when getFlightDestinations fails', async () => {
+            const error = new Error('Get flight destinations failed');
+            jest.spyOn(flightDataService, 'getFlightDestinations').mockRejectedValue(error);
+
+            await expect(flightDataService.getFlightDestinations()).rejects.toThrow('Get flight destinations failed');
+            expect(flightDataService.getFlightDestinations).toHaveBeenNthCalledWith(1);
         });
     });
 });

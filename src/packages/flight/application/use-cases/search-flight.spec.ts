@@ -8,7 +8,7 @@ import {
     SearchFlightUseCase,
     ValidateDateParams,
     ShouldApplyDiscountParams
-} from '@flight/application/use-cases/search';
+} from '@flight/application/use-cases/search-flight';
 
 import { IFlightDataService } from '@flight/application/interfaces/flight-data-service';
 
@@ -17,7 +17,7 @@ import {
     ParseDateParams
 } from '@common/utils/date';
 
-describe('@flight/application/use-cases/search', () => {
+describe('@flight/application/use-cases/search-flight', () => {
     let useCase: SearchFlightUseCase;
     let mockFlightDataService: jest.Mocked<IFlightDataService>;
 
@@ -38,6 +38,7 @@ describe('@flight/application/use-cases/search', () => {
         // TODO: Update mock when actual response body is known
         mockFlightDataService = {
             searchFlight: jest.fn(),
+            getFlightDestinations: jest.fn(),
         };
 
         const module: TestingModule = await Test.createTestingModule({

@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 
 import { Flight, FlightProps } from '@flight/domain/entities/flight';
+import { FlightDestination, FlightDestinationProps } from '@flight/domain/entities/flight-destination';
 import { IFlightDataService, FlightSearchParams } from '@flight/application/interfaces/flight-data-service';
 
 export interface SearchFlightResponse {
@@ -171,6 +172,46 @@ interface ContextWithTotalResults {
 interface ContextWithoutTotalResults {
     sessionId: string;
     status: string;
+}
+
+// Flight Destinations
+
+export interface GetFlightDestinationsResponse {
+    data: {
+        inputSuggest: InputSuggestItem[];
+    }
+}
+
+interface InputSuggestItem {
+    navigation: Navigation;
+    presentation: Presentation;
+}
+
+interface Navigation {
+    entityId: string;
+    entityType: string;
+    localizedName: string;
+    relevantFlightParams: RelevantFlightParams;
+    relevantHotelParams: RelevantHotelParams;
+}
+
+interface RelevantFlightParams {
+    entityId: string;
+    flightPlaceType: string;
+    localizedName: string;
+    skyId: string;
+}
+
+interface RelevantHotelParams {
+    entityId: string;
+    entityType: string;
+    localizedName: string;
+}
+
+interface Presentation {
+    subtitle: string;
+    suggestionTitle: string;
+    title: string;
 }
 
 @Injectable()
@@ -4084,6 +4125,234 @@ export class FlightApiService implements IFlightDataService {
                     "results": []
                 },
                 "token": "eyJjYyI6ICJlY29ub215IiwgImEiOiAxLCAiYyI6IDAsICJpIjogMCwgImwiOiBbWyJOWUNBIiwgIkhOTCIsICIyMDI0LTA4LTIyIl0sIFsiSE5MIiwgIk5ZQ0EiLCAiMjAyNC0wOC0yNSJdXX0="
+            }
+        }
+    }
+
+    async getFlightDestinations(): Promise<FlightDestination[]> {
+        // TODO: Uncomment this when access to RapidAPI is granted
+        // const options = {
+        //     method: 'GET',
+        //     url: 'https://skyscanner89.p.rapidapi.com/flights/auto-complete',
+        //     params: { query: 'New' },
+        //     headers: {
+        //         'x-rapidapi-host': 'skyscanner89.p.rapidapi.com'
+        //     }
+        // };
+
+        try {
+            // TODO: Uncomment this when access to RapidAPI is granted
+            // const response = await axios.request(options);
+
+            const response = FlightApiService.getMockGetFlightDestinations();
+
+            const flightDestinations: FlightDestination[] = [];
+
+            for (const inputSuggest of response.data.inputSuggest) {
+                const flightDestinationData: FlightDestinationProps = {
+                    locationId: inputSuggest.navigation.relevantFlightParams.entityId,
+                    locationName: inputSuggest.navigation.relevantFlightParams.localizedName,
+                    locationCode: inputSuggest.navigation.relevantFlightParams.skyId,
+                };
+
+                flightDestinations.push(new FlightDestination(flightDestinationData));
+            }
+
+            return flightDestinations;
+        } catch (error) {
+            throw new Error(`Failed to search flights: ${error.message}`);
+        }
+    }
+
+    static getMockGetFlightDestinations(): GetFlightDestinationsResponse {
+        return {
+            data: {
+                "inputSuggest": [
+                    {
+                        "navigation": {
+                            "entityId": "27537542",
+                            "entityType": "CITY",
+                            "localizedName": "New York",
+                            "relevantFlightParams": {
+                                "entityId": "27537542",
+                                "flightPlaceType": "CITY",
+                                "localizedName": "New York",
+                                "skyId": "NYCA"
+                            },
+                            "relevantHotelParams": {
+                                "entityId": "27537542",
+                                "entityType": "CITY",
+                                "localizedName": "New York"
+                            }
+                        },
+                        "presentation": {
+                            "subtitle": "United States",
+                            "suggestionTitle": "New York (Any)",
+                            "title": "New York"
+                        }
+                    },
+                    {
+                        "navigation": {
+                            "entityId": "95565059",
+                            "entityType": "AIRPORT",
+                            "localizedName": "New York Newark",
+                            "relevantFlightParams": {
+                                "entityId": "95565059",
+                                "flightPlaceType": "AIRPORT",
+                                "localizedName": "New York Newark",
+                                "skyId": "EWR"
+                            },
+                            "relevantHotelParams": {
+                                "entityId": "27537542",
+                                "entityType": "CITY",
+                                "localizedName": "New York"
+                            }
+                        },
+                        "presentation": {
+                            "subtitle": "United States",
+                            "suggestionTitle": "New York Newark (EWR)",
+                            "title": "New York Newark"
+                        }
+                    },
+                    {
+                        "navigation": {
+                            "entityId": "95565058",
+                            "entityType": "AIRPORT",
+                            "localizedName": "New York John F. Kennedy",
+                            "relevantFlightParams": {
+                                "entityId": "95565058",
+                                "flightPlaceType": "AIRPORT",
+                                "localizedName": "New York John F. Kennedy",
+                                "skyId": "JFK"
+                            },
+                            "relevantHotelParams": {
+                                "entityId": "27537542",
+                                "entityType": "CITY",
+                                "localizedName": "New York"
+                            }
+                        },
+                        "presentation": {
+                            "subtitle": "United States",
+                            "suggestionTitle": "New York John F. Kennedy (JFK)",
+                            "title": "New York John F. Kennedy"
+                        }
+                    },
+                    {
+                        "navigation": {
+                            "entityId": "95565057",
+                            "entityType": "AIRPORT",
+                            "localizedName": "New York LaGuardia",
+                            "relevantFlightParams": {
+                                "entityId": "95565057",
+                                "flightPlaceType": "AIRPORT",
+                                "localizedName": "New York LaGuardia",
+                                "skyId": "LGA"
+                            },
+                            "relevantHotelParams": {
+                                "entityId": "27537542",
+                                "entityType": "CITY",
+                                "localizedName": "New York"
+                            }
+                        },
+                        "presentation": {
+                            "subtitle": "United States",
+                            "suggestionTitle": "New York LaGuardia (LGA)",
+                            "title": "New York LaGuardia"
+                        }
+                    },
+                    {
+                        "navigation": {
+                            "entityId": "95566280",
+                            "entityType": "AIRPORT",
+                            "localizedName": "Stewart International",
+                            "relevantFlightParams": {
+                                "entityId": "95566280",
+                                "flightPlaceType": "AIRPORT",
+                                "localizedName": "Stewart International",
+                                "skyId": "SWF"
+                            },
+                            "relevantHotelParams": {
+                                "entityId": "27537542",
+                                "entityType": "CITY",
+                                "localizedName": "New York"
+                            }
+                        },
+                        "presentation": {
+                            "subtitle": "United States",
+                            "suggestionTitle": "Stewart International (SWF)",
+                            "title": "Stewart International"
+                        }
+                    },
+                    {
+                        "navigation": {
+                            "entityId": "95674044",
+                            "entityType": "AIRPORT",
+                            "localizedName": "Newcastle",
+                            "relevantFlightParams": {
+                                "entityId": "95674044",
+                                "flightPlaceType": "AIRPORT",
+                                "localizedName": "Newcastle",
+                                "skyId": "NCL"
+                            },
+                            "relevantHotelParams": {
+                                "entityId": "27545092",
+                                "entityType": "CITY",
+                                "localizedName": "Newcastle"
+                            }
+                        },
+                        "presentation": {
+                            "subtitle": "United Kingdom",
+                            "suggestionTitle": "Newcastle (NCL)",
+                            "title": "Newcastle"
+                        }
+                    },
+                    {
+                        "navigation": {
+                            "entityId": "95673963",
+                            "entityType": "AIRPORT",
+                            "localizedName": "Newquay",
+                            "relevantFlightParams": {
+                                "entityId": "95673963",
+                                "flightPlaceType": "AIRPORT",
+                                "localizedName": "Newquay",
+                                "skyId": "NQY"
+                            },
+                            "relevantHotelParams": {
+                                "entityId": "27545149",
+                                "entityType": "CITY",
+                                "localizedName": "Newquay"
+                            }
+                        },
+                        "presentation": {
+                            "subtitle": "United Kingdom",
+                            "suggestionTitle": "Newquay (NQY)",
+                            "title": "Newquay"
+                        }
+                    },
+                    {
+                        "navigation": {
+                            "entityId": "35234892",
+                            "entityType": "CITY",
+                            "localizedName": "New Orleans",
+                            "relevantFlightParams": {
+                                "entityId": "35234892",
+                                "flightPlaceType": "CITY",
+                                "localizedName": "New Orleans",
+                                "skyId": "MSYA"
+                            },
+                            "relevantHotelParams": {
+                                "entityId": "35234892",
+                                "entityType": "CITY",
+                                "localizedName": "New Orleans"
+                            }
+                        },
+                        "presentation": {
+                            "subtitle": "United States",
+                            "suggestionTitle": "New Orleans (Any)",
+                            "title": "New Orleans"
+                        }
+                    }
+                ]
             }
         }
     }
