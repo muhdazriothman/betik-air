@@ -93,6 +93,21 @@ describe('@common/utils/date', () => {
             expect(result).toBe(true);
         });
 
+        it('should return true for same date', () => {
+            const params = {
+                targetDate: DateTime.fromFormat('2024-01-14', format),
+                referenceDate: DateTime.fromFormat('2024-01-14', format),
+            };
+
+            const result = DateValidator.isBeforeDate(params);
+
+            assertIsValidDate(params.targetDate);
+            assertIsValidDate(params.referenceDate);
+
+            expect(result).toBe(true);
+        });
+
+
         it('should return false for date after given date', () => {
             const params = {
                 targetDate: DateTime.fromFormat('2024-01-16', format),
