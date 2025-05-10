@@ -1,0 +1,102 @@
+import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+
+import { DateTime } from 'luxon';
+
+import { Flight } from '@flight/domain/entities/flight';
+import { IFlightDataService } from '@flight/application/interfaces/flight-data-service';
+import { SearchFlightDto } from '@flight/interfaces/http/flight/dtos/search-flight';
+
+import { DateValidator } from '@common/utils/date';
+
+export interface ValidateDateParams {
+    departureDate: DateTime;
+    returnDate: DateTime;
+}
+
+export interface ShouldApplyDiscountParams {
+    departureDate: DateTime;
+    returnDate: DateTime;
+}
+
+@Injectable()
+export class SearchFlightUseCase {
+    constructor(
+        @Inject('IFlightDataService')
+        private readonly flightDataService: IFlightDataService
+    ) { }
+
+    async execute(query: SearchFlightDto) {
+        const parsedDepartureDate = DateValidator.parseDate(query.departureDate, 'dd-MM-yyyy');
+        const parsedReturnDate = DateValidator.parseDate(query.returnDate, 'dd-MM-yyyy');
+
+        SearchFlightUseCase.validateDate({
+            departureDate: parsedDepartureDate,
+            returnDate: parsedReturnDate
+        });
+
+        let flights = await this.flightDataService.searchFlight({
+            departureDate: query.departureDate,
+            returnDate: query.returnDate,
+            origin: query.origin,
+            originId: query.originId,
+            destination: query.destination,
+            destinationId: query.destinationId
+        });
+
+        const shouldApplyDiscount = SearchFlightUseCase.shouldApplyDiscount({
+            departureDate: parsedDepartureDate,
+            returnDate: parsedReturnDate
+        });
+
+        if (shouldApplyDiscount) {
+            // TODO: Invoke flight entity applyDiscount method
+        }
+
+        return flights;
+    }
+
+    static validateDate(params: ValidateDateParams) {
+        const {
+            departureDate,
+            returnDate
+        } = params;
+
+        if (DateValidator.isPastDate(departureDate)) {
+            throw new BadRequestException('departureDate must be in the future');
+        }
+
+        if (DateValidator.isPastDate(returnDate)) {
+            throw new BadRequestException('returnDate must be in the future');
+        }
+
+        if (DateValidator.isBeforeDate({
+            targetDate: returnDate,
+            referenceDate: departureDate,
+        })) {
+            throw new BadRequestException('returnDate must be after departureDate');
+        }
+    }
+
+    static sortItinerariesByPrice(flights: Flight) {
+        // TODO: Implement sorting logic, pending confirmation on the search flight response
+        return flights;
+    }
+
+    static shouldApplyDiscount(params: ShouldApplyDiscountParams): boolean {
+        const {
+            departureDate,
+            returnDate
+        } = params;
+
+        const daysBetweenDates = DateValidator.getDaysBetweenDates({
+            firstDate: departureDate,
+            secondDate: returnDate,
+        });
+
+        if (daysBetweenDates > 10) {
+            return true;
+        }
+
+        return false;
+    }
+}
