@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { FlightController } from '@flight/interfaces/http/flight/controllers/flight';
 
-describe('TempFlightController', () => {
+describe('@flight/interfaces/http/flight/controllers/flight', () => {
     let controller: FlightController;
 
     beforeEach(async () => {

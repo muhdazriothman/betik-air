@@ -4,7 +4,7 @@ import { FlightController } from '../flight/interfaces/http/flight/controllers/f
 import { SearchFlightUseCase } from '../flight/application/use-cases/search';
 import { FlightApiService } from '../flight/infra/services/flight-api';
 
-describe('FlightModule', () => {
+describe('@modules/flight', () => {
     let moduleRef: any;
 
     beforeEach(async () => {
@@ -23,7 +23,6 @@ describe('FlightModule', () => {
             expect(metadata).toEqual([]);
         });
     });
-
 
     it('should have FlightController', () => {
         const controller = moduleRef.get(FlightController);

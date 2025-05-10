@@ -7,7 +7,7 @@ class TestClass {
     date: string;
 }
 
-describe('IsDateFormat', () => {
+describe('@common/decorators/is-date-format', () => {
     let testClass: TestClass;
 
     beforeEach(() => {
