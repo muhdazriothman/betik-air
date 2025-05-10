@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { FlightController } from '../flight/interfaces/http/flight/controllers/flight';
-import { SearchFlightUseCase } from '../flight/application/use-cases/search';
-import { FlightApiService } from '../flight/infra/services/flight-api';
+import { FlightController } from '@flight/interfaces/http/flight/controllers/flight';
+import { SearchFlightUseCase } from '@flight/application/use-cases/search';
+import { FlightApiService } from '@flight/infra/services/flight-api';
 
 @Module({
     imports: [],

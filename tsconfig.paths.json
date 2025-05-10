@@ -3,10 +3,10 @@
         "baseUrl": "./",
         "paths": {
             "@common/*": [
-                "src/common/*"
+                "src/packages/common/*"
             ],
             "@flight/*": [
-                "src/flight/*"
+                "src/packages/flight/*"
             ],
             "@modules/*": [
                 "src/modules/*"

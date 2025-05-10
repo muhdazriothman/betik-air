@@ -1,5 +1,5 @@
 import { validate } from 'class-validator';
-import { SearchFlightDto } from './search-flight';
+import { SearchFlightDto } from '@flight/interfaces/http/flight/dtos/search-flight';
 
 describe('@flight/interfaces/http/flight/dtos/search-flight', () => {
     let dto: SearchFlightDto;

@@ -1,7 +1,7 @@
 module.exports = {
     moduleNameMapper: {
-        '^@common/(.*)$': '<rootDir>/src/common/$1',
-        '^@flight/(.*)$': '<rootDir>/src/flight/$1',
+        '^@common/(.*)$': '<rootDir>/src/packages/common/$1',
+        '^@flight/(.*)$': '<rootDir>/src/packages/flight/$1',
         '^@modules/(.*)$': '<rootDir>/src/modules/$1'
     },
     transform: {
