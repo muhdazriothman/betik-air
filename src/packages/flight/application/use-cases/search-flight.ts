@@ -49,10 +49,12 @@ export class SearchFlightUseCase {
         });
 
         if (shouldApplyDiscount) {
-            // TODO: Invoke flight entity applyDiscount method
+            for (const flight of flights) {
+                flight.applyDiscount();
+            }
         }
 
-        return flights;
+        return SearchFlightUseCase.sortItinerariesByPrice(flights);
     }
 
     static validateDate(params: ValidateDateParams) {
@@ -77,9 +79,12 @@ export class SearchFlightUseCase {
         }
     }
 
-    static sortItinerariesByPrice(flights: Flight) {
-        // TODO: Implement sorting logic, pending confirmation on the search flight response
-        return flights;
+    static sortItinerariesByPrice(flights: Flight[]) {
+        const sortedFlights = flights.sort((a, b) => {
+            return a.itinerary.price.raw - b.itinerary.price.raw;
+        });
+
+        return sortedFlights;
     }
 
     static shouldApplyDiscount(params: ShouldApplyDiscountParams): boolean {

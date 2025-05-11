@@ -22,7 +22,6 @@ describe('@flight/application/use-cases/search-flight', () => {
     let mockFlightDataService: jest.Mocked<IFlightDataService>;
 
     let parsedDateSpy: jest.SpyInstance;
-    let validateDateSpy: jest.SpyInstance;
     let shouldApplyDiscountSpy: jest.SpyInstance;
     let getDaysBetweenDatesSpy: jest.SpyInstance;
 
@@ -31,11 +30,10 @@ describe('@flight/application/use-cases/search-flight', () => {
         jest.setSystemTime(new Date('2024-01-15').getTime());
 
         parsedDateSpy = jest.spyOn(DateValidator, 'parseDate');
-        validateDateSpy = jest.spyOn(SearchFlightUseCase, 'validateDate');
+        jest.spyOn(SearchFlightUseCase, 'validateDate');
         shouldApplyDiscountSpy = jest.spyOn(SearchFlightUseCase, 'shouldApplyDiscount');
         getDaysBetweenDatesSpy = jest.spyOn(DateValidator, 'getDaysBetweenDates');
 
-        // TODO: Update mock when actual response body is known
         mockFlightDataService = {
             searchFlight: jest.fn(),
             getFlightDestinations: jest.fn(),
@@ -69,9 +67,19 @@ describe('@flight/application/use-cases/search-flight', () => {
             destinationId: '2',
         };
 
-        const mockFlights = {
-            // Add mock flight data structure here based on your Flight entity
-        } as Flight;
+        const flight = new Flight({
+            id: 'test-id-1',
+            itinerary: {
+                price: { formatted: '100', pricingOptionId: 'test-pricing-option-id', raw: 100 },
+            },
+        });
+
+        let sortByItineraryPriceSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            jest.spyOn(flight, 'applyDiscount');
+            sortByItineraryPriceSpy = jest.spyOn(SearchFlightUseCase, 'sortItinerariesByPrice');
+        });
 
         function assertParseDate(callIndex: number, params: ParseDateParams) {
             expect(DateValidator.parseDate).toHaveBeenNthCalledWith(callIndex, params.date, params.format);
@@ -86,7 +94,7 @@ describe('@flight/application/use-cases/search-flight', () => {
         }
 
         it('should successfully search flights with valid dates', async () => {
-            mockFlightDataService.searchFlight.mockResolvedValue(mockFlights);
+            mockFlightDataService.searchFlight.mockResolvedValue([flight]);
 
             const result = await useCase.execute(dto);
 
@@ -114,7 +122,13 @@ describe('@flight/application/use-cases/search-flight', () => {
                 returnDate: parsedDateSpy.mock.results[1].value,
             });
 
-            expect(result).toBe(mockFlights);
+            expect(flight.applyDiscount).not.toHaveBeenCalled();
+
+            expect(sortByItineraryPriceSpy).toHaveBeenCalledWith([flight]);
+
+            const sortedFlights = sortByItineraryPriceSpy.mock.results[0].value;
+
+            expect(result).toBe(sortedFlights);
         });
 
         it('should apply discount when trip duration is more than 10 days', async () => {
@@ -124,13 +138,17 @@ describe('@flight/application/use-cases/search-flight', () => {
                 returnDate: '31-03-2024',
             };
 
-            mockFlightDataService.searchFlight.mockResolvedValue(mockFlights);
+            mockFlightDataService.searchFlight.mockResolvedValue([flight]);
 
             const result = await useCase.execute(longTripQuery);
 
-            // TODO: Update assertion when actual response body is known
-            expect(mockFlightDataService.searchFlight).toHaveBeenCalledWith(longTripQuery);
-            expect(result).toBe(mockFlights);
+            expect(flight.applyDiscount).toHaveBeenCalled();
+
+            expect(sortByItineraryPriceSpy).toHaveBeenCalledWith([flight]);
+
+            const sortedFlights = sortByItineraryPriceSpy.mock.results[0].value;
+
+            expect(result).toBe(sortedFlights);
         });
 
         it('should throw BadRequestException when departure date is not valid', async () => {
@@ -289,6 +307,58 @@ describe('@flight/application/use-cases/search-flight', () => {
                 targetDate: invalidDates.returnDate,
                 referenceDate: invalidDates.departureDate,
             });
+        });
+    });
+
+    describe('#sortItinerariesByPrice', () => {
+        it('should sort itineraries by price', () => {
+            const flights = [new Flight({
+                id: 'test-id-1',
+                itinerary: {
+                    price: {
+                        raw: 300,
+                        formatted: '300',
+                        pricingOptionId: 'test-pricing-option-id'
+                    }
+                }
+            }), new Flight({
+                id: 'test-id-2',
+                itinerary: {
+                    price: {
+                        raw: 200,
+                        formatted: '200',
+                        pricingOptionId: 'test-pricing-option-id'
+                    }
+                }
+            }), new Flight({
+                id: 'test-id-3',
+                itinerary: {
+                    price: {
+                        raw: 100,
+                        formatted: '100',
+                        pricingOptionId: 'test-pricing-option-id'
+                    }
+                }
+            })];
+
+            const sortedFlights = SearchFlightUseCase.sortItinerariesByPrice(flights);
+
+            expect(sortedFlights).toEqual([
+                {
+                    id: 'test-id-3',
+                    itinerary: {
+                        price: { raw: 100, formatted: '100', pricingOptionId: 'test-pricing-option-id' }
+                    }
+                },
+                {
+                    id: 'test-id-2',
+                    itinerary: { price: { raw: 200, formatted: '200', pricingOptionId: 'test-pricing-option-id' } }
+                },
+                {
+                    id: 'test-id-1',
+                    itinerary: { price: { raw: 300, formatted: '300', pricingOptionId: 'test-pricing-option-id' } }
+                }
+            ]);
         });
     });
 
