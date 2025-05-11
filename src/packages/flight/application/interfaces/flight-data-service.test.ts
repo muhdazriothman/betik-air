@@ -26,78 +26,23 @@ describe('@flight/application/interfaces/flight-data-service', () => {
             };
 
             const flightProps: FlightProps = {
-                accommodations: {
-                    buckets: [],
-                    context: {
-                        sessionId: 'test-session',
-                        status: 'success',
-                        totalResults: 0
-                    },
-                    results: []
+                id: 'test-id',
+                itinerary: {
+                    price: {
+                        formatted: '100',
+                        pricingOptionId: 'test-pricing-option-id',
+                        raw: 100
+                    }
                 },
-                brandCarousel: {
-                    buckets: null,
-                    context: {
-                        sessionId: 'test-session',
-                        status: 'success',
-                        totalResults: 0
-                    },
-                    results: []
-                },
-                brandInlines: {
-                    buckets: null,
-                    context: {
-                        sessionId: 'test-session',
-                        status: 'success',
-                        totalResults: 0
-                    },
-                    results: []
-                },
-                carHire: {
-                    buckets: [],
-                    context: {
-                        sessionId: 'test-session',
-                        status: 'success',
-                        totalResults: 0
-                    },
-                    results: []
-                },
-                context: {
-                    sessionId: 'test-session',
-                    status: 'success'
-                },
-                itineraries: {
-                    agents: null,
-                    alliances: null,
-                    buckets: [],
-                    context: {
-                        sessionId: 'test-session',
-                        status: 'success',
-                        totalResults: 0
-                    },
-                    creatives: null,
-                    destinationImageUrl: 'https://example.com/image.jpg',
-                    filterStats: null,
-                    results: []
-                },
-                packages: {
-                    buckets: null,
-                    context: {
-                        sessionId: 'test-session',
-                        status: 'success',
-                        totalResults: 0
-                    },
-                    results: []
-                },
-                token: 'test-token'
             };
 
             const flight = new Flight(flightProps);
-            jest.spyOn(flightDataService, 'searchFlight').mockResolvedValue(flight);
+            jest.spyOn(flightDataService, 'searchFlight').mockResolvedValue([flight]);
 
             const result = await flightDataService.searchFlight(searchParams);
 
-            expect(result).toBeInstanceOf(Flight);
+            expect(result).toBeInstanceOf(Array);
+            expect(result[0]).toBeInstanceOf(Flight);
             expect(flightDataService.searchFlight).toHaveBeenNthCalledWith(1, searchParams);
         });
 

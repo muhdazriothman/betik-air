@@ -6,70 +6,14 @@ describe('@flight/domain/entities/flight', () => {
 
     beforeEach(() => {
         flightProps = {
-            accommodations: {
-                buckets: [],
-                context: {
-                    sessionId: 'test-session',
-                    status: 'success',
-                    totalResults: 0
+            id: 'test-id',
+            itinerary: {
+                price: {
+                    formatted: '$100',
+                    pricingOptionId: 'test-pricing-option-id',
+                    raw: 100.1
                 },
-                results: []
             },
-            brandCarousel: {
-                buckets: null,
-                context: {
-                    sessionId: 'test-session',
-                    status: 'success',
-                    totalResults: 0
-                },
-                results: []
-            },
-            brandInlines: {
-                buckets: null,
-                context: {
-                    sessionId: 'test-session',
-                    status: 'success',
-                    totalResults: 0
-                },
-                results: []
-            },
-            carHire: {
-                buckets: [],
-                context: {
-                    sessionId: 'test-session',
-                    status: 'success',
-                    totalResults: 0
-                },
-                results: []
-            },
-            context: {
-                sessionId: 'test-session',
-                status: 'success'
-            },
-            itineraries: {
-                agents: null,
-                alliances: null,
-                buckets: [],
-                context: {
-                    sessionId: 'test-session',
-                    status: 'success',
-                    totalResults: 0
-                },
-                creatives: null,
-                destinationImageUrl: 'https://example.com/image.jpg',
-                filterStats: null,
-                results: []
-            },
-            packages: {
-                buckets: null,
-                context: {
-                    sessionId: 'test-session',
-                    status: 'success',
-                    totalResults: 0
-                },
-                results: []
-            },
-            token: 'test-token'
         };
     });
 
@@ -77,22 +21,19 @@ describe('@flight/domain/entities/flight', () => {
         it('should create a Flight instance with provided props', () => {
             flight = new Flight(flightProps);
 
-            expect(flight.accommodations).toBe(flightProps.accommodations);
-            expect(flight.brandCarousel).toBe(flightProps.brandCarousel);
-            expect(flight.brandInlines).toBe(flightProps.brandInlines);
-            expect(flight.carHire).toBe(flightProps.carHire);
-            expect(flight.context).toBe(flightProps.context);
-            expect(flight.itineraries).toBe(flightProps.itineraries);
-            expect(flight.packages).toBe(flightProps.packages);
-            expect(flight.token).toBe(flightProps.token);
+            expect(flight.id).toBe(flightProps.id);
+            expect(flight.itinerary).toBe(flightProps.itinerary);
         });
     });
 
     describe('#applyDiscount', () => {
-        it('should throw error as method is not implemented', () => {
+        it('should apply discount to the itinerary price and round up formatted price', () => {
             flight = new Flight(flightProps);
 
-            expect(() => flight.applyDiscount()).toThrow('Not implemented');
+            flight.applyDiscount();
+
+            expect(flight.itinerary.price.raw).toBe(90.09);
+            expect(flight.itinerary.price.formatted).toBe('$91');
         });
     });
 });

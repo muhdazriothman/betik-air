@@ -11,6 +11,6 @@ export interface FlightSearchParams {
 }
 
 export interface IFlightDataService {
-    searchFlight(params: FlightSearchParams): Promise<Flight>;
+    searchFlight(params: FlightSearchParams): Promise<Flight[]>;
     getFlightDestinations(): Promise<FlightDestination[]>;
 }

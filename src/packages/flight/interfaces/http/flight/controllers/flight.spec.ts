@@ -52,7 +52,7 @@ describe('@flight/interfaces/http/flight/controllers/flight', () => {
                 destinationId: '2',
             };
 
-            const mockFlight = {} as Flight;
+            const mockFlight = [{} as Flight];
             searchFlightUseCase.execute.mockResolvedValue(mockFlight);
 
             const result = await controller.searchFlight(query);
