@@ -2,21 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { FlightController } from '@flight/interfaces/http/flight/controllers/flight';
 import { SearchFlightUseCase } from '@flight/application/use-cases/search-flight';
-import { GetFlightDestinationUseCase } from '@flight/application/use-cases/get-flight-destination';
 
 import { Flight } from '@flight/domain/entities/flight';
 
 describe('@flight/interfaces/http/flight/controllers/flight', () => {
     let controller: FlightController;
     let searchFlightUseCase: jest.Mocked<SearchFlightUseCase>;
-    let getFlightDestinationUseCase: jest.Mocked<GetFlightDestinationUseCase>;
 
     beforeEach(async () => {
         searchFlightUseCase = {
-            execute: jest.fn(),
-        } as any;
-
-        getFlightDestinationUseCase = {
             execute: jest.fn(),
         } as any;
 
@@ -26,11 +20,7 @@ describe('@flight/interfaces/http/flight/controllers/flight', () => {
                 {
                     provide: SearchFlightUseCase,
                     useValue: searchFlightUseCase,
-                },
-                {
-                    provide: GetFlightDestinationUseCase,
-                    useValue: getFlightDestinationUseCase,
-                },
+                }
             ],
         }).compile();
 
@@ -59,26 +49,6 @@ describe('@flight/interfaces/http/flight/controllers/flight', () => {
 
             expect(searchFlightUseCase.execute).toHaveBeenCalledWith(query);
             expect(result).toBe(mockFlight);
-        });
-    });
-
-    describe('#getFlightDestination', () => {
-        it('should call getFlightDestinationUseCase.execute', async () => {
-
-            const mockFlightDestinations = [
-                {
-                    locationId: '1',
-                    locationName: 'New York',
-                    locationCode: 'NYC',
-                },
-            ];
-
-            getFlightDestinationUseCase.execute.mockResolvedValue(mockFlightDestinations);
-
-            const result = await controller.getFlightDestination();
-
-            expect(getFlightDestinationUseCase.execute).toHaveBeenCalled();
-            expect(result).toBe(mockFlightDestinations);
         });
     });
 });
