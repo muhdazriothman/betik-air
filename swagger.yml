@@ -1,0 +1,123 @@
+openapi: 3.0.3
+info:
+  title: Flight Search API
+  version: 1.0.0
+  description: API to search for round-trip flights
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /flight/search:
+    get:
+      summary: Search for round-trip flights
+      parameters:
+        - name: departureDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: 15-05-2025
+        - name: returnDate
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date
+            example: 27-05-2025
+        - name: origin
+          in: query
+          required: true
+          schema:
+            type: string
+            example: origin
+        - name: originId
+          in: query
+          required: true
+          schema:
+            type: string
+            example: originId
+        - name: destination
+          in: query
+          required: true
+          schema:
+            type: string
+            example: destination
+        - name: destinationId
+          in: query
+          required: true
+          schema:
+            type: string
+            example: destinationId
+      responses:
+        '200':
+          description: List of available round-trip flights
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: "11442-2505121038--32573-1-12240-2505121708|12240-2505152130--32573-1-12712-2505161528"
+                    legs:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          arrival:
+                            type: string
+                            format: date-time
+                          departure:
+                            type: string
+                            format: date-time
+                          originCode:
+                            type: string
+                          originName:
+                            type: string
+                          destinationCode:
+                            type: string
+                          destinationName:
+                            type: string
+                          durationInMinutes:
+                            type: integer
+                          stopCount:
+                            type: integer
+                          segments:
+                            type: array
+                            items:
+                              type: object
+                              properties:
+                                arrival:
+                                  type: string
+                                  format: date-time
+                                departure:
+                                  type: string
+                                  format: date-time
+                                originCode:
+                                  type: string
+                                originName:
+                                  type: string
+                                destinationCode:
+                                  type: string
+                                destinationName:
+                                  type: string
+                                carrier:
+                                  type: string
+                                flightNumber:
+                                  type: string
+                    price:
+                      type: number
+                    priceFormatted:
+                      type: string
+                    priceAfterDiscount:
+                      type: number
+                    priceAfterDiscountFormatted:
+                      type: string
+        '400':
+          description: Invalid request parameters
+        '500':
+          description: Internal server error
