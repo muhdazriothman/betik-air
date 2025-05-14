@@ -1,4 +1,4 @@
-import { Injectable, Inject, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject, BadRequestException, BadGatewayException } from '@nestjs/common';
 
 import { DateTime } from 'luxon';
 
@@ -34,14 +34,20 @@ export class SearchFlightUseCase {
             returnDate: parsedReturnDate
         });
 
-        let flights = await this.flightDataService.searchFlight({
-            departureDate: query.departureDate,
-            returnDate: query.returnDate,
-            origin: query.origin,
-            originId: query.originId,
-            destination: query.destination,
-            destinationId: query.destinationId
-        });
+        let flights: Flight[] = [];
+
+        try {
+            flights = await this.flightDataService.searchFlight({
+                departureDate: query.departureDate,
+                returnDate: query.returnDate,
+                origin: query.origin,
+                originId: query.originId,
+                destination: query.destination,
+                destinationId: query.destinationId
+            });
+        } catch (error) {
+            throw new BadGatewayException('Flight data service is not available');
+        }
 
         const shouldApplyDiscount = SearchFlightUseCase.shouldApplyDiscount({
             departureDate: parsedDepartureDate,
@@ -50,11 +56,13 @@ export class SearchFlightUseCase {
 
         if (shouldApplyDiscount) {
             for (const flight of flights) {
-                flight.applyDiscount();
+                flight.applyDiscount(0.10);
             }
         }
 
-        return SearchFlightUseCase.sortItinerariesByPrice(flights);
+        return SearchFlightUseCase.sortFlightData(flights, {
+            sortBy: 'asc'
+        });
     }
 
     static validateDate(params: ValidateDateParams) {
@@ -79,9 +87,17 @@ export class SearchFlightUseCase {
         }
     }
 
-    static sortItinerariesByPrice(flights: Flight[]) {
+    static sortFlightData(flights: Flight[], options: {
+        sortBy: 'asc' | 'desc';
+    } = {
+            sortBy: 'asc'
+        }) {
         const sortedFlights = flights.sort((a, b) => {
-            return a.itinerary.price.raw - b.itinerary.price.raw;
+            if (options.sortBy === 'asc') {
+                return a.priceAfterDiscount - b.priceAfterDiscount;
+            }
+
+            return b.priceAfterDiscount - a.priceAfterDiscount;
         });
 
         return sortedFlights;

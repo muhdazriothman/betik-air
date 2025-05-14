@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BadRequestException } from '@nestjs/common';
+import { BadGatewayException, BadRequestException } from '@nestjs/common';
 
 import { DateTime } from 'luxon';
 
@@ -35,8 +35,7 @@ describe('@flight/application/use-cases/search-flight', () => {
         getDaysBetweenDatesSpy = jest.spyOn(DateValidator, 'getDaysBetweenDates');
 
         mockFlightDataService = {
-            searchFlight: jest.fn(),
-            getFlightDestinations: jest.fn(),
+            searchFlight: jest.fn()
         };
 
         const module: TestingModule = await Test.createTestingModule({
@@ -69,16 +68,18 @@ describe('@flight/application/use-cases/search-flight', () => {
 
         const flight = new Flight({
             id: 'test-id-1',
-            itinerary: {
-                price: { formatted: '100', pricingOptionId: 'test-pricing-option-id', raw: 100 },
-            },
+            price: 100,
+            priceFormatted: '$100',
+            priceAfterDiscount: 90.09,
+            priceAfterDiscountFormatted: '$91',
+            legs: [],
         });
 
         let sortByItineraryPriceSpy: jest.SpyInstance;
 
         beforeEach(() => {
             jest.spyOn(flight, 'applyDiscount');
-            sortByItineraryPriceSpy = jest.spyOn(SearchFlightUseCase, 'sortItinerariesByPrice');
+            sortByItineraryPriceSpy = jest.spyOn(SearchFlightUseCase, 'sortFlightData');
         });
 
         function assertParseDate(callIndex: number, params: ParseDateParams) {
@@ -114,7 +115,6 @@ describe('@flight/application/use-cases/search-flight', () => {
                 returnDate: parsedDateSpy.mock.results[1].value,
             });
 
-            // TODO: Update assertion when actual response body is known
             expect(mockFlightDataService.searchFlight).toHaveBeenCalledWith(dto);
 
             assertShouldApplyDiscount({
@@ -124,7 +124,9 @@ describe('@flight/application/use-cases/search-flight', () => {
 
             expect(flight.applyDiscount).not.toHaveBeenCalled();
 
-            expect(sortByItineraryPriceSpy).toHaveBeenCalledWith([flight]);
+            expect(sortByItineraryPriceSpy).toHaveBeenCalledWith([flight], {
+                sortBy: 'asc'
+            });
 
             const sortedFlights = sortByItineraryPriceSpy.mock.results[0].value;
 
@@ -144,11 +146,40 @@ describe('@flight/application/use-cases/search-flight', () => {
 
             expect(flight.applyDiscount).toHaveBeenCalled();
 
-            expect(sortByItineraryPriceSpy).toHaveBeenCalledWith([flight]);
+            expect(sortByItineraryPriceSpy).toHaveBeenCalledWith([flight], {
+                sortBy: 'asc'
+            });
 
             const sortedFlights = sortByItineraryPriceSpy.mock.results[0].value;
 
             expect(result).toBe(sortedFlights);
+        });
+
+        it('should throw BadGatewayException when flight data service is not available', async () => {
+            mockFlightDataService.searchFlight.mockRejectedValue(new Error('Flight data service is not available'));
+
+            await expect(useCase.execute(dto)).rejects.toThrow(new BadGatewayException('Flight data service is not available'));
+
+            expect(parsedDateSpy).toHaveBeenCalledTimes(2);
+            assertParseDate(1, {
+                date: dto.departureDate,
+                format: 'dd-MM-yyyy',
+            });
+
+            assertParseDate(2, {
+                date: dto.returnDate,
+                format: 'dd-MM-yyyy',
+            });
+
+            assertValidateDate({
+                departureDate: parsedDateSpy.mock.results[0].value,
+                returnDate: parsedDateSpy.mock.results[1].value,
+            });
+
+            expect(mockFlightDataService.searchFlight).toHaveBeenCalledWith(dto);
+            expect(SearchFlightUseCase.shouldApplyDiscount).not.toHaveBeenCalled();
+            expect(flight.applyDiscount).not.toHaveBeenCalled();
+            expect(sortByItineraryPriceSpy).not.toHaveBeenCalled();
         });
 
         it('should throw BadRequestException when departure date is not valid', async () => {
@@ -169,6 +200,8 @@ describe('@flight/application/use-cases/search-flight', () => {
 
             expect(mockFlightDataService.searchFlight).not.toHaveBeenCalled();
             expect(SearchFlightUseCase.shouldApplyDiscount).not.toHaveBeenCalled();
+            expect(flight.applyDiscount).not.toHaveBeenCalled();
+            expect(sortByItineraryPriceSpy).not.toHaveBeenCalled();
         });
 
         it('should throw BadRequestException when return date is not valid', async () => {
@@ -194,6 +227,8 @@ describe('@flight/application/use-cases/search-flight', () => {
 
             expect(mockFlightDataService.searchFlight).not.toHaveBeenCalled();
             expect(SearchFlightUseCase.shouldApplyDiscount).not.toHaveBeenCalled();
+            expect(flight.applyDiscount).not.toHaveBeenCalled();
+            expect(sortByItineraryPriceSpy).not.toHaveBeenCalled();
         });
 
         it('should throw BadRequestException when date validation fails', async () => {
@@ -223,6 +258,8 @@ describe('@flight/application/use-cases/search-flight', () => {
 
             expect(mockFlightDataService.searchFlight).not.toHaveBeenCalled();
             expect(SearchFlightUseCase.shouldApplyDiscount).not.toHaveBeenCalled();
+            expect(flight.applyDiscount).not.toHaveBeenCalled();
+            expect(sortByItineraryPriceSpy).not.toHaveBeenCalled();
         });
     });
 
@@ -310,54 +347,55 @@ describe('@flight/application/use-cases/search-flight', () => {
         });
     });
 
-    describe('#sortItinerariesByPrice', () => {
-        it('should sort itineraries by price', () => {
-            const flights = [new Flight({
+    describe('#sortFlightData', () => {
+        const flights = [
+            new Flight({
                 id: 'test-id-1',
-                itinerary: {
-                    price: {
-                        raw: 300,
-                        formatted: '300',
-                        pricingOptionId: 'test-pricing-option-id'
-                    }
-                }
-            }), new Flight({
+                price: 100,
+                priceFormatted: '$100',
+                priceAfterDiscount: 90.09,
+                priceAfterDiscountFormatted: '$91',
+                legs: [],
+            }),
+            new Flight({
                 id: 'test-id-2',
-                itinerary: {
-                    price: {
-                        raw: 200,
-                        formatted: '200',
-                        pricingOptionId: 'test-pricing-option-id'
-                    }
-                }
-            }), new Flight({
+                price: 300,
+                priceFormatted: '$300',
+                priceAfterDiscount: 270.27,
+                priceAfterDiscountFormatted: '$271',
+                legs: [],
+            }),
+            new Flight({
                 id: 'test-id-3',
-                itinerary: {
-                    price: {
-                        raw: 100,
-                        formatted: '100',
-                        pricingOptionId: 'test-pricing-option-id'
-                    }
-                }
-            })];
+                price: 200,
+                priceFormatted: '$200',
+                priceAfterDiscount: 180.18,
+                priceAfterDiscountFormatted: '$181',
+                legs: [],
+            })
+        ];
 
-            const sortedFlights = SearchFlightUseCase.sortItinerariesByPrice(flights);
+        it('should sort flights by price with ascending order', () => {
+            const sortedFlights = SearchFlightUseCase.sortFlightData([...flights], {
+                sortBy: 'asc'
+            });
 
             expect(sortedFlights).toEqual([
-                {
-                    id: 'test-id-3',
-                    itinerary: {
-                        price: { raw: 100, formatted: '100', pricingOptionId: 'test-pricing-option-id' }
-                    }
-                },
-                {
-                    id: 'test-id-2',
-                    itinerary: { price: { raw: 200, formatted: '200', pricingOptionId: 'test-pricing-option-id' } }
-                },
-                {
-                    id: 'test-id-1',
-                    itinerary: { price: { raw: 300, formatted: '300', pricingOptionId: 'test-pricing-option-id' } }
-                }
+                flights[0],
+                flights[2],
+                flights[1],
+            ]);
+        });
+
+        it('should sort flights by price with descending order', () => {
+            const sortedFlights = SearchFlightUseCase.sortFlightData([...flights], {
+                sortBy: 'desc'
+            });
+
+            expect(sortedFlights).toEqual([
+                flights[1],
+                flights[2],
+                flights[0],
             ]);
         });
     });

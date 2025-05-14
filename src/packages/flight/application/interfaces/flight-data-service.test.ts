@@ -25,13 +25,34 @@ describe('@flight/application/interfaces/flight-data-service', () => {
 
             const flightProps: FlightProps = {
                 id: 'test-id',
-                itinerary: {
-                    price: {
-                        formatted: '100',
-                        pricingOptionId: 'test-pricing-option-id',
-                        raw: 100
+                legs: [
+                    {
+                        arrival: '2025-05-12',
+                        departure: '2025-05-12',
+                        originCode: 'LAX',
+                        originName: 'Los Angeles',
+                        destinationCode: 'SFO',
+                        destinationName: 'San Francisco',
+                        durationInMinutes: 120,
+                        stopCount: 0,
+                        segments: [
+                            {
+                                arrival: '2025-05-12',
+                                departure: '2025-05-12',
+                                originCode: 'LAX',
+                                originName: 'Los Angeles',
+                                destinationCode: 'SFO',
+                                destinationName: 'San Francisco',
+                                carrier: 'Delta',
+                                flightNumber: '1234',
+                            },
+                        ],
                     }
-                },
+                ],
+                price: 100.1,
+                priceFormatted: '$100',
+                priceAfterDiscount: 90.09,
+                priceAfterDiscountFormatted: '$91',
             };
 
             const flight = new Flight(flightProps);

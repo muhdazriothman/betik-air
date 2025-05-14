@@ -1,32 +1,62 @@
 export interface FlightProps {
     id: string;
-    itinerary: Itinerary;
+    legs: FlightLeg[];
+    price: number;
+    priceFormatted: string;
+    priceAfterDiscount: number;
+    priceAfterDiscountFormatted: string;
 }
 
-export interface Itinerary {
-    price: {
-        formatted: string;
-        pricingOptionId: string;
-        raw: number;
-    };
-    [key: string]: any;
+export interface FlightLeg {
+    arrival: string;
+    departure: string;
+    originCode: string;
+    originName: string;
+    destinationCode: string;
+    destinationName: string;
+    durationInMinutes: number;
+    stopCount: number;
+    segments: FlightSegment[];
 }
 
-const DISCOUNT_RATE = 0.10;
+export interface FlightSegment {
+    arrival: string;
+    departure: string;
+    originCode: string;
+    originName: string;
+    destinationCode: string;
+    destinationName: string;
+    carrier: string;
+    flightNumber: string;
+}
+
+
+const MAX_DISCOUNT_RATE = 0.10;
 
 export class Flight {
     public id: string;
-    public itinerary: Itinerary;
+    public legs: FlightLeg[];
+    public price: number;
+    public priceFormatted: string;
+    public priceAfterDiscount: number;
+    public priceAfterDiscountFormatted: string;
 
     constructor(flight: FlightProps) {
         this.id = flight.id;
-        this.itinerary = flight.itinerary;
+        this.legs = flight.legs;
+        this.price = flight.price;
+        this.priceFormatted = flight.priceFormatted;
+        this.priceAfterDiscount = flight.priceAfterDiscount;
+        this.priceAfterDiscountFormatted = flight.priceAfterDiscountFormatted;
     }
 
-    applyDiscount(): void {
-        this.itinerary.price.raw = this.itinerary.price.raw * (1 - DISCOUNT_RATE);
+    applyDiscount(discountRate: number): void {
+        if (discountRate > MAX_DISCOUNT_RATE) {
+            throw new Error('Discount rate cannot be greater than 10%');
+        }
 
-        this.itinerary.price.formatted = `$${Math.ceil(this.itinerary.price.raw)}`;
+        this.priceAfterDiscount = this.price * (1 - discountRate);
+        this.priceAfterDiscountFormatted = `$${Math.ceil(this.priceAfterDiscount)}`;
     }
 }
 
