@@ -10,7 +10,7 @@ import {
     ShouldApplyDiscountParams
 } from '@flight/application/use-cases/search-flight';
 
-import { FlightDataService } from '@flight/domain/services/flight-data-service';
+import { FlightService } from '@flight/domain/services/flight-data-service';
 
 import {
     DateValidator,
@@ -19,7 +19,7 @@ import {
 
 describe('@flight/application/use-cases/search-flight', () => {
     let useCase: SearchFlightUseCase;
-    let mockFlightDataService: jest.Mocked<FlightDataService>;
+    let mockFlightService: jest.Mocked<FlightService>;
 
     let parsedDateSpy: jest.SpyInstance;
     let shouldApplyDiscountSpy: jest.SpyInstance;
@@ -34,7 +34,7 @@ describe('@flight/application/use-cases/search-flight', () => {
         shouldApplyDiscountSpy = jest.spyOn(SearchFlightUseCase, 'shouldApplyDiscount');
         getDaysBetweenDatesSpy = jest.spyOn(DateValidator, 'getDaysBetweenDates');
 
-        mockFlightDataService = {
+        mockFlightService = {
             searchFlight: jest.fn()
         };
 
@@ -42,8 +42,8 @@ describe('@flight/application/use-cases/search-flight', () => {
             providers: [
                 SearchFlightUseCase,
                 {
-                    provide: 'IFlightDataService',
-                    useValue: mockFlightDataService,
+                    provide: 'FlightService',
+                    useValue: mockFlightService,
                 },
             ],
         }).compile();
@@ -95,7 +95,7 @@ describe('@flight/application/use-cases/search-flight', () => {
         }
 
         it('should successfully search flights with valid dates', async () => {
-            mockFlightDataService.searchFlight.mockResolvedValue([flight]);
+            mockFlightService.searchFlight.mockResolvedValue([flight]);
 
             const result = await useCase.execute(dto);
 
@@ -115,7 +115,7 @@ describe('@flight/application/use-cases/search-flight', () => {
                 returnDate: parsedDateSpy.mock.results[1].value,
             });
 
-            expect(mockFlightDataService.searchFlight).toHaveBeenCalledWith(dto);
+            expect(mockFlightService.searchFlight).toHaveBeenCalledWith(dto);
 
             assertShouldApplyDiscount({
                 departureDate: parsedDateSpy.mock.results[0].value,
@@ -140,7 +140,7 @@ describe('@flight/application/use-cases/search-flight', () => {
                 returnDate: '31-03-2024',
             };
 
-            mockFlightDataService.searchFlight.mockResolvedValue([flight]);
+            mockFlightService.searchFlight.mockResolvedValue([flight]);
 
             const result = await useCase.execute(longTripQuery);
 
@@ -156,7 +156,7 @@ describe('@flight/application/use-cases/search-flight', () => {
         });
 
         it('should throw BadGatewayException when flight data service is not available', async () => {
-            mockFlightDataService.searchFlight.mockRejectedValue(new Error('Flight data service is not available'));
+            mockFlightService.searchFlight.mockRejectedValue(new Error('Flight data service is not available'));
 
             await expect(useCase.execute(dto)).rejects.toThrow(new BadGatewayException('Flight data service is not available'));
 
@@ -176,7 +176,7 @@ describe('@flight/application/use-cases/search-flight', () => {
                 returnDate: parsedDateSpy.mock.results[1].value,
             });
 
-            expect(mockFlightDataService.searchFlight).toHaveBeenCalledWith(dto);
+            expect(mockFlightService.searchFlight).toHaveBeenCalledWith(dto);
             expect(SearchFlightUseCase.shouldApplyDiscount).not.toHaveBeenCalled();
             expect(flight.applyDiscount).not.toHaveBeenCalled();
             expect(sortByItineraryPriceSpy).not.toHaveBeenCalled();
@@ -198,7 +198,7 @@ describe('@flight/application/use-cases/search-flight', () => {
                 format: 'dd-MM-yyyy',
             });
 
-            expect(mockFlightDataService.searchFlight).not.toHaveBeenCalled();
+            expect(mockFlightService.searchFlight).not.toHaveBeenCalled();
             expect(SearchFlightUseCase.shouldApplyDiscount).not.toHaveBeenCalled();
             expect(flight.applyDiscount).not.toHaveBeenCalled();
             expect(sortByItineraryPriceSpy).not.toHaveBeenCalled();
@@ -225,7 +225,7 @@ describe('@flight/application/use-cases/search-flight', () => {
                 format: 'dd-MM-yyyy',
             });
 
-            expect(mockFlightDataService.searchFlight).not.toHaveBeenCalled();
+            expect(mockFlightService.searchFlight).not.toHaveBeenCalled();
             expect(SearchFlightUseCase.shouldApplyDiscount).not.toHaveBeenCalled();
             expect(flight.applyDiscount).not.toHaveBeenCalled();
             expect(sortByItineraryPriceSpy).not.toHaveBeenCalled();
@@ -256,7 +256,7 @@ describe('@flight/application/use-cases/search-flight', () => {
                 returnDate: parsedDateSpy.mock.results[1].value,
             });
 
-            expect(mockFlightDataService.searchFlight).not.toHaveBeenCalled();
+            expect(mockFlightService.searchFlight).not.toHaveBeenCalled();
             expect(SearchFlightUseCase.shouldApplyDiscount).not.toHaveBeenCalled();
             expect(flight.applyDiscount).not.toHaveBeenCalled();
             expect(sortByItineraryPriceSpy).not.toHaveBeenCalled();

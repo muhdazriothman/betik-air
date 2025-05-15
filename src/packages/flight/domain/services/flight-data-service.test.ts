@@ -1,12 +1,12 @@
-import { FlightSearchParams, FlightDataService } from '@flight/domain/services/flight-data-service';
+import { FlightSearchParams, FlightService } from '@flight/domain/services/flight-data-service';
 
 import { Flight, FlightProps } from '@flight/domain/entities/flight';
 
 describe('@flight/domain/services/flight-data-service', () => {
-    let flightDataService: FlightDataService;
+    let flightService: FlightService;
 
     beforeEach(() => {
-        flightDataService = {
+        flightService = {
             searchFlight: jest.fn()
         };
     });
@@ -55,13 +55,13 @@ describe('@flight/domain/services/flight-data-service', () => {
             };
 
             const flight = new Flight(flightProps);
-            jest.spyOn(flightDataService, 'searchFlight').mockResolvedValue([flight]);
+            jest.spyOn(flightService, 'searchFlight').mockResolvedValue([flight]);
 
-            const result = await flightDataService.searchFlight(searchParams);
+            const result = await flightService.searchFlight(searchParams);
 
             expect(result).toBeInstanceOf(Array);
             expect(result[0]).toBeInstanceOf(Flight);
-            expect(flightDataService.searchFlight).toHaveBeenNthCalledWith(1, searchParams);
+            expect(flightService.searchFlight).toHaveBeenNthCalledWith(1, searchParams);
         });
 
         it('should throw an error when search fails', async () => {
@@ -75,10 +75,10 @@ describe('@flight/domain/services/flight-data-service', () => {
             };
 
             const error = new Error('Search failed');
-            jest.spyOn(flightDataService, 'searchFlight').mockRejectedValue(error);
+            jest.spyOn(flightService, 'searchFlight').mockRejectedValue(error);
 
-            await expect(flightDataService.searchFlight(searchParams)).rejects.toThrow('Search failed');
-            expect(flightDataService.searchFlight).toHaveBeenNthCalledWith(1, searchParams);
+            await expect(flightService.searchFlight(searchParams)).rejects.toThrow('Search failed');
+            expect(flightService.searchFlight).toHaveBeenNthCalledWith(1, searchParams);
         });
     });
 });

@@ -3,7 +3,7 @@ import { Injectable, Inject, BadRequestException, BadGatewayException } from '@n
 import { DateTime } from 'luxon';
 
 import { Flight } from '@flight/domain/entities/flight';
-import { FlightDataService } from '@flight/domain/services/flight-data-service';
+import { FlightService } from '@flight/domain/services/flight-data-service';
 import { SearchFlightDto } from '@flight/interfaces/http/flight/dtos/search-flight';
 
 import { DateValidator } from '@common/utils/date';
@@ -21,8 +21,8 @@ export interface ShouldApplyDiscountParams {
 @Injectable()
 export class SearchFlightUseCase {
     constructor(
-        @Inject('IFlightDataService')
-        private readonly flightDataService: FlightDataService
+        @Inject('FlightService')
+        private readonly flightService: FlightService
     ) { }
 
     async execute(query: SearchFlightDto) {
@@ -37,7 +37,7 @@ export class SearchFlightUseCase {
         let flights: Flight[] = [];
 
         try {
-            flights = await this.flightDataService.searchFlight({
+            flights = await this.flightService.searchFlight({
                 departureDate: query.departureDate,
                 returnDate: query.returnDate,
                 origin: query.origin,

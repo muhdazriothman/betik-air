@@ -3,11 +3,11 @@ import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 
 import { Flight, FlightLeg, FlightSegment } from '@flight/domain/entities/flight';
-import { FlightDataService, FlightSearchParams } from '@flight/domain/services/flight-data-service';
+import { FlightService, FlightSearchParams } from '@flight/domain/services/flight-data-service';
 import { SearchFlightApiResponse } from '@flight/infra/api/search-flight-api-response';
 
 @Injectable()
-export class FlightApiService implements FlightDataService {
+export class FlightServiceImpl implements FlightService {
     async searchFlight(params: FlightSearchParams): Promise<Flight[]> {
         // TODO: Uncomment this when access to RapidAPI is granted
         // const options = {
@@ -30,7 +30,7 @@ export class FlightApiService implements FlightDataService {
             // TODO: Uncomment this when access to RapidAPI is granted
             // const response = await axios.request(options);
 
-            const response = FlightApiService.getMockFlight();
+            const response = FlightServiceImpl.getMockFlight();
 
             const flightIdSet: Set<string> = new Set();
             const flightDate: Flight[] = [];
