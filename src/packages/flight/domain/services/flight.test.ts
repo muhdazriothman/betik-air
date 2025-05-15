@@ -2,7 +2,7 @@ import { FlightSearchParams, FlightService } from '@flight/domain/services/fligh
 
 import { Flight, FlightProps } from '@flight/domain/entities/flight';
 
-describe('@flight/domain/services/flight-data-service', () => {
+describe('@flight/domain/services/flight', () => {
     let flightService: FlightService;
 
     beforeEach(() => {
