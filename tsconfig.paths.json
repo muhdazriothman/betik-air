@@ -13,6 +13,9 @@
             ],
             "@test/*": [
                 "src/test/*"
+            ],
+            "@user/*": [
+                "src/packages/user/*"
             ]
         }
     }
