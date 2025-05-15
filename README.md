@@ -1,98 +1,115 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# ✈️ Betik Air - Flight Search & Booking API
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+An API for searching and booking flights built with NestJS and TypeScript. This application provides endpoints for user authentication and flight search functionality.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+## 🚀 Features
 
-## Description
+- **User Authentication**: Secure JWT-based authentication
+- **Flight Search**: Search for round-trip flights with customizable parameters
+- **API Documentation**: Complete Swagger/OpenAPI documentation
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+## 📦 Installation
 
-## Project setup
+1. Clone the repository:
 
-```bash
-$ npm install
-```
+   ```bash
+   git clone https://github.com/yourusername/betik-air.git
+   cd betik-air
+   ```
 
-## Compile and run the project
+2. Install dependencies:
+
+   ```bash
+   npm install
+   ```
+
+## 🏃‍♂️ Running the Application
+
+### Development Mode
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm run start:dev
 ```
 
-## Run tests
+This will start the server in development mode with hot-reload enabled. The API will be available at `http://localhost:3000`.
+
+### Production Mode
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+npm run build
+npm run start:prod
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### Running Tests
 
 ```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+# Run all tests
+npm test
+
+# Run tests with coverage
+npm run test:cov
+
+# Run tests in watch mode
+npm run test:watch
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+## 🔑 Authentication
 
-## Resources
+The API uses JWT for authentication. To authenticate:
 
-Check out a few resources that may come in handy when working with NestJS:
+1. Send a POST request to `/auth/login` with:
+   ```json
+   {
+     "username": "admin",
+     "password": "admin"
+   }
+   ```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+2. You will receive a JWT token in response:
+   ```json
+   {
+     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5..."
+   }
+   ```
 
-## Support
+3. Include this token in the `Authorization` header for subsequent requests:
+   ```
+   Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5...
+   ```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+## 📚 API Documentation
 
-## Stay in touch
+API documentation is available in OpenAPI/Swagger format. You can:
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+1. View the raw Swagger file at: `swagger.yml` in the project root
+2. View the interactive documentation when the application is running:
+   ```
+   http://localhost:3000/api
+   ```
 
-## License
+For a quick reference, you can also import the `swagger.yml` file into tools like:
+- [Swagger Editor](https://editor.swagger.io/)
+- [Postman](https://www.postman.com/) (Import as OpenAPI specification)
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+### Available Endpoints
+
+| Method | Endpoint         | Description                   | Authentication |
+|--------|------------------|-------------------------------|----------------|
+| POST   | /auth/login      | Authenticate user             | No             |
+| GET    | /flight/search   | Search for flights            | Yes            |
+
+### Flight Search Parameters
+
+The `/flight/search` endpoint accepts the following query parameters:
+
+- `departureDate`: Departure date in format DD-MM-YYYY
+- `returnDate`: Return date in format DD-MM-YYYY
+- `origin`: Origin location code
+- `originId`: Origin location ID
+- `destination`: Destination location code
+- `destinationId`: Destination location ID
+
+Example request:
+```
+GET /flight/search?departureDate=15-05-2025&returnDate=27-05-2025&origin=KUL&originId=1&destination=SIN&destinationId=2
+```
