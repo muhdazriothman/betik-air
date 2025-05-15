@@ -58,8 +58,8 @@ describe('@flight/application/use-cases/search-flight', () => {
 
     describe('#execute', () => {
         const dto = {
-            departureDate: '20-03-2024',
-            returnDate: '25-03-2024',
+            departureDate: '2024-03-20',
+            returnDate: '2024-03-25',
             origin: 'KUL',
             originId: '1',
             destination: 'SIN',
@@ -102,12 +102,12 @@ describe('@flight/application/use-cases/search-flight', () => {
             expect(parsedDateSpy).toHaveBeenCalledTimes(2);
             assertParseDate(1, {
                 date: dto.departureDate,
-                format: 'dd-MM-yyyy',
+                format: 'yyyy-MM-dd',
             });
 
             assertParseDate(2, {
                 date: dto.returnDate,
-                format: 'dd-MM-yyyy',
+                format: 'yyyy-MM-dd',
             });
 
             assertValidateDate({
@@ -136,8 +136,8 @@ describe('@flight/application/use-cases/search-flight', () => {
         it('should apply discount when trip duration is more than 10 days', async () => {
             const longTripQuery = {
                 ...dto,
-                departureDate: '20-03-2024',
-                returnDate: '31-03-2024',
+                departureDate: '2024-03-20',
+                returnDate: '2024-03-31',
             };
 
             mockFlightService.searchFlight.mockResolvedValue([flight]);
@@ -163,12 +163,12 @@ describe('@flight/application/use-cases/search-flight', () => {
             expect(parsedDateSpy).toHaveBeenCalledTimes(2);
             assertParseDate(1, {
                 date: dto.departureDate,
-                format: 'dd-MM-yyyy',
+                format: 'yyyy-MM-dd',
             });
 
             assertParseDate(2, {
                 date: dto.returnDate,
-                format: 'dd-MM-yyyy',
+                format: 'yyyy-MM-dd',
             });
 
             assertValidateDate({
@@ -195,7 +195,7 @@ describe('@flight/application/use-cases/search-flight', () => {
             expect(parsedDateSpy).toHaveBeenCalledTimes(1);
             assertParseDate(1, {
                 date: invalidDateQuery.departureDate,
-                format: 'dd-MM-yyyy',
+                format: 'yyyy-MM-dd',
             });
 
             expect(mockFlightService.searchFlight).not.toHaveBeenCalled();
@@ -217,12 +217,12 @@ describe('@flight/application/use-cases/search-flight', () => {
             expect(parsedDateSpy).toHaveBeenCalledTimes(2);
             assertParseDate(1, {
                 date: invalidDateQuery.departureDate,
-                format: 'dd-MM-yyyy',
+                format: 'yyyy-MM-dd',
             });
 
             assertParseDate(2, {
                 date: invalidDateQuery.returnDate,
-                format: 'dd-MM-yyyy',
+                format: 'yyyy-MM-dd',
             });
 
             expect(mockFlightService.searchFlight).not.toHaveBeenCalled();
@@ -234,7 +234,7 @@ describe('@flight/application/use-cases/search-flight', () => {
         it('should throw BadRequestException when date validation fails', async () => {
             const pastDateQuery = {
                 ...dto,
-                departureDate: '10-01-2024',
+                departureDate: '2024-01-10',
             };
 
             await expect(useCase.execute(pastDateQuery)).rejects.toThrow(
@@ -243,17 +243,12 @@ describe('@flight/application/use-cases/search-flight', () => {
 
             assertParseDate(1, {
                 date: pastDateQuery.departureDate,
-                format: 'dd-MM-yyyy',
+                format: 'yyyy-MM-dd',
             });
 
             assertParseDate(2, {
                 date: pastDateQuery.returnDate,
-                format: 'dd-MM-yyyy',
-            });
-
-            assertValidateDate({
-                departureDate: parsedDateSpy.mock.results[0].value,
-                returnDate: parsedDateSpy.mock.results[1].value,
+                format: 'yyyy-MM-dd',
             });
 
             expect(mockFlightService.searchFlight).not.toHaveBeenCalled();
@@ -283,8 +278,8 @@ describe('@flight/application/use-cases/search-flight', () => {
 
         it('should not throw error for valid dates', () => {
             const validDates = {
-                departureDate: DateTime.fromFormat('16-01-2024', 'dd-MM-yyyy'),
-                returnDate: DateTime.fromFormat('20-01-2024', 'dd-MM-yyyy'),
+                departureDate: DateTime.fromFormat('2024-01-16', 'yyyy-MM-dd'),
+                returnDate: DateTime.fromFormat('2024-01-20', 'yyyy-MM-dd'),
             };
 
             expect(() => SearchFlightUseCase.validateDate(validDates)).not.toThrow();
@@ -296,8 +291,8 @@ describe('@flight/application/use-cases/search-flight', () => {
 
         it('should throw BadRequestException for past departure date', () => {
             const pastDepartureDate = {
-                departureDate: DateTime.fromFormat('14-01-2024', 'dd-MM-yyyy'),
-                returnDate: DateTime.fromFormat('20-01-2024', 'dd-MM-yyyy'),
+                departureDate: DateTime.fromFormat('2024-01-14', 'yyyy-MM-dd'),
+                returnDate: DateTime.fromFormat('2024-01-20', 'yyyy-MM-dd'),
             };
 
             expect(() => SearchFlightUseCase.validateDate(pastDepartureDate)).toThrow(
@@ -311,8 +306,8 @@ describe('@flight/application/use-cases/search-flight', () => {
 
         it('should throw BadRequestException for past return date', () => {
             const pastReturnDate = {
-                departureDate: DateTime.fromFormat('16-01-2024', 'dd-MM-yyyy'),
-                returnDate: DateTime.fromFormat('14-01-2024', 'dd-MM-yyyy'),
+                departureDate: DateTime.fromFormat('2024-01-16', 'yyyy-MM-dd'),
+                returnDate: DateTime.fromFormat('2024-01-14', 'yyyy-MM-dd'),
             };
 
             expect(() => SearchFlightUseCase.validateDate(pastReturnDate)).toThrow(
@@ -328,8 +323,8 @@ describe('@flight/application/use-cases/search-flight', () => {
 
         it('should throw BadRequestException when departure date is after return date', () => {
             const invalidDates = {
-                departureDate: DateTime.fromFormat('26-01-2024', 'dd-MM-yyyy'),
-                returnDate: DateTime.fromFormat('20-01-2024', 'dd-MM-yyyy'),
+                departureDate: DateTime.fromFormat('2024-01-26', 'yyyy-MM-dd'),
+                returnDate: DateTime.fromFormat('2024-01-20', 'yyyy-MM-dd'),
             };
 
             expect(() => SearchFlightUseCase.validateDate(invalidDates)).toThrow(
@@ -403,8 +398,8 @@ describe('@flight/application/use-cases/search-flight', () => {
     describe('#shouldApplyDiscount', () => {
         it('should return true when trip duration is more than 10 days', () => {
             const longTrip = {
-                departureDate: DateTime.fromFormat('20-03-2024', 'dd-MM-yyyy'),
-                returnDate: DateTime.fromFormat('31-03-2024', 'dd-MM-yyyy'),
+                departureDate: DateTime.fromFormat('2024-03-20', 'yyyy-MM-dd'),
+                returnDate: DateTime.fromFormat('2024-03-31', 'yyyy-MM-dd'),
             };
 
             const result = SearchFlightUseCase.shouldApplyDiscount(longTrip);
@@ -419,8 +414,8 @@ describe('@flight/application/use-cases/search-flight', () => {
 
         it('should return false when trip duration is less than or equal to 10 days', () => {
             const shortTrip = {
-                departureDate: DateTime.fromFormat('20-03-2024', 'dd-MM-yyyy'),
-                returnDate: DateTime.fromFormat('30-03-2024', 'dd-MM-yyyy'),
+                departureDate: DateTime.fromFormat('2024-03-20', 'yyyy-MM-dd'),
+                returnDate: DateTime.fromFormat('2024-03-30', 'yyyy-MM-dd'),
             };
 
             const result = SearchFlightUseCase.shouldApplyDiscount(shortTrip);

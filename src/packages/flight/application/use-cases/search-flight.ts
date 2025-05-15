@@ -26,8 +26,8 @@ export class SearchFlightUseCase {
     ) { }
 
     async execute(query: SearchFlightDto) {
-        const parsedDepartureDate = DateValidator.parseDate(query.departureDate, 'dd-MM-yyyy');
-        const parsedReturnDate = DateValidator.parseDate(query.returnDate, 'dd-MM-yyyy');
+        const parsedDepartureDate = DateValidator.parseDate(query.departureDate, 'yyyy-MM-dd');
+        const parsedReturnDate = DateValidator.parseDate(query.returnDate, 'yyyy-MM-dd');
 
         SearchFlightUseCase.validateDate({
             departureDate: parsedDepartureDate,

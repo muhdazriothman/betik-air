@@ -79,17 +79,7 @@ The API uses JWT for authentication. To authenticate:
 
 ## 📚 API Documentation
 
-API documentation is available in OpenAPI/Swagger format. You can:
-
-1. View the raw Swagger file at: `swagger.yml` in the project root
-2. View the interactive documentation when the application is running:
-   ```
-   http://localhost:3000/api
-   ```
-
-For a quick reference, you can also import the `swagger.yml` file into tools like:
-- [Swagger Editor](https://editor.swagger.io/)
-- [Postman](https://www.postman.com/) (Import as OpenAPI specification)
+API documentation is available in OpenAPI/Swagger format. You can view the raw Swagger file at: `swagger.yml` in the project root.
 
 ### Available Endpoints
 
@@ -102,8 +92,8 @@ For a quick reference, you can also import the `swagger.yml` file into tools lik
 
 The `/flight/search` endpoint accepts the following query parameters:
 
-- `departureDate`: Departure date in format DD-MM-YYYY
-- `returnDate`: Return date in format DD-MM-YYYY
+- `departureDate`: Departure date in format YYYY-MM-DD
+- `returnDate`: Return date in format YYYY-MM-DD
 - `origin`: Origin location code
 - `originId`: Origin location ID
 - `destination`: Destination location code
@@ -111,5 +101,5 @@ The `/flight/search` endpoint accepts the following query parameters:
 
 Example request:
 ```
-GET /flight/search?departureDate=15-05-2025&returnDate=27-05-2025&origin=KUL&originId=1&destination=SIN&destinationId=2
+GET /flight/search?departureDate=2025-05-15&returnDate=2025-05-27&origin=KUL&originId=1&destination=SIN&destinationId=2
 ```

@@ -4,15 +4,15 @@ import { IsDateFormat } from '@common/decorators/is-date-format';
 export class SearchFlightDto {
     @IsString()
     @IsNotEmpty()
-    @IsDateFormat('dd-MM-yyyy', {
-        message: 'departureDate must be in DD-MM-YYYY format',
+    @IsDateFormat('yyyy-MM-dd', {
+        message: 'departureDate must be in YYYY-MM-DD format',
     })
     departureDate: string;
 
     @IsString()
     @IsNotEmpty()
-    @IsDateFormat('dd-MM-yyyy', {
-        message: 'departureDate must be in DD-MM-YYYY format',
+    @IsDateFormat('yyyy-MM-dd', {
+        message: 'returnDate must be in YYYY-MM-DD format',
     })
     returnDate: string;
 

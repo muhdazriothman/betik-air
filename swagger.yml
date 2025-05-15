@@ -51,14 +51,14 @@ paths:
           schema:
             type: string
             format: date
-            example: 15-05-2025
+            example: 2025-05-15
         - name: returnDate
           in: query
           required: true
           schema:
             type: string
             format: date
-            example: 27-05-2025
+            example: 2025-05-27
         - name: origin
           in: query
           required: true

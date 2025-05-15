@@ -7,8 +7,8 @@ describe('@flight/interfaces/http/flight/dtos/search-flight', () => {
     beforeEach(() => {
         dto = new SearchFlightDto();
 
-        dto.departureDate = '20-03-2024';
-        dto.returnDate = '25-03-2024';
+        dto.departureDate = '2024-03-20';
+        dto.returnDate = '2024-03-25';
         dto.origin = 'KUL';
         dto.originId = '1';
         dto.destination = 'SIN';
@@ -49,7 +49,7 @@ describe('@flight/interfaces/http/flight/dtos/search-flight', () => {
             });
 
             it('should fail validation when departureDate format is invalid', async () => {
-                dto.departureDate = '2024-03-20';
+                dto.departureDate = '20-03-2024';
 
                 const errors = await validate(dto);
                 expect(errors.length).toBeGreaterThan(0);
@@ -85,7 +85,7 @@ describe('@flight/interfaces/http/flight/dtos/search-flight', () => {
             });
 
             it('should fail validation when returnDate format is invalid', async () => {
-                dto.returnDate = '2024-03-20';
+                dto.returnDate = '20-03-2024';
 
                 const errors = await validate(dto);
                 expect(errors.length).toBeGreaterThan(0);

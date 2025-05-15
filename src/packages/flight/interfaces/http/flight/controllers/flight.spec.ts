@@ -48,8 +48,8 @@ describe('@flight/interfaces/http/flight/controllers/flight', () => {
 
         it('should call searchFlightUseCase.execute with query params', async () => {
             const query = {
-                departureDate: '20-03-2024',
-                returnDate: '25-03-2024',
+                departureDate: '2024-03-20',
+                returnDate: '2024-03-25',
                 origin: 'KUL',
                 originId: '1',
                 destination: 'SIN',
