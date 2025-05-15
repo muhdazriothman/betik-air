@@ -1,12 +1,11 @@
-import { IFlightDataService, FlightSearchParams } from '@flight/application/interfaces/flight-data-service';
+import { FlightSearchParams, FlightDataService } from '@flight/domain/services/flight-data-service';
 
 import { Flight, FlightProps } from '@flight/domain/entities/flight';
 
-describe('@flight/application/interfaces/flight-data-service', () => {
-    let flightDataService: IFlightDataService;
+describe('@flight/domain/services/flight-data-service', () => {
+    let flightDataService: FlightDataService;
 
     beforeEach(() => {
-        // Mock implementation of IFlightDataService
         flightDataService = {
             searchFlight: jest.fn()
         };

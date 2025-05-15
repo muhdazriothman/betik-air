@@ -10,7 +10,7 @@ import {
     ShouldApplyDiscountParams
 } from '@flight/application/use-cases/search-flight';
 
-import { IFlightDataService } from '@flight/application/interfaces/flight-data-service';
+import { FlightDataService } from '@flight/domain/services/flight-data-service';
 
 import {
     DateValidator,
@@ -19,7 +19,7 @@ import {
 
 describe('@flight/application/use-cases/search-flight', () => {
     let useCase: SearchFlightUseCase;
-    let mockFlightDataService: jest.Mocked<IFlightDataService>;
+    let mockFlightDataService: jest.Mocked<FlightDataService>;
 
     let parsedDateSpy: jest.SpyInstance;
     let shouldApplyDiscountSpy: jest.SpyInstance;

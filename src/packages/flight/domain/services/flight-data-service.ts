@@ -9,6 +9,6 @@ export interface FlightSearchParams {
     destinationId: string;
 }
 
-export interface IFlightDataService {
+export interface FlightDataService {
     searchFlight(params: FlightSearchParams): Promise<Flight[]>;
 }
