@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing';
 import { FlightModule } from '@modules/flight';
 import { FlightController } from '@flight/interfaces/http/flight/controllers/flight';
 import { SearchFlightUseCase } from '@flight/application/use-cases/search-flight';
-import { FlightServiceImpl } from '@flight/infra/services/flight-api';
+import { FlightServiceImpl } from '@flight/infra/services/flight';
 
 describe('@modules/flight', () => {
     let moduleRef: any;
@@ -34,8 +34,8 @@ describe('@modules/flight', () => {
         expect(useCase).toBeDefined();
     });
 
-    it('should have FlightApiService as IFlightDataService', () => {
-        const service = moduleRef.get('IFlightDataService');
+    it('should have FlightServiceImpl as FlightService', () => {
+        const service = moduleRef.get('FlightService');
         expect(service).toBeInstanceOf(FlightServiceImpl);
     });
 });

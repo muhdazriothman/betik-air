@@ -1,4 +1,4 @@
-import { FlightSearchParams, FlightService } from '@flight/domain/services/flight-data-service';
+import { FlightSearchParams, FlightService } from '@flight/domain/services/flight';
 
 import { Flight, FlightProps } from '@flight/domain/entities/flight';
 

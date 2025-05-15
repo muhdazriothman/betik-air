@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { FlightController } from '@flight/interfaces/http/flight/controllers/flight';
 import { SearchFlightUseCase } from '@flight/application/use-cases/search-flight';
-import { FlightMapper } from '@flight/interfaces/http/flight/mappers/flight-response';
+import { FlightMapper } from '@flight/interfaces/http/flight/mappers/flight';
 
 import { FlightFixture } from '@test/fixture/flight';
 import { Flight } from '@flight/domain/entities/flight';

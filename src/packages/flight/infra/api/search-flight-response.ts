@@ -1,4 +1,4 @@
-export interface SearchFlightApiResponse {
+export interface SearchFlightResponse {
     data: Data;
     status: string;
     token: string;

@@ -3,7 +3,7 @@ import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '@user/interfaces/http/guards/jwt-auth';
 import { SearchFlightDto } from '@flight/interfaces/http/flight/dtos/search-flight';
 import { SearchFlightUseCase } from '@flight/application/use-cases/search-flight';
-import { FlightMapper } from '@flight/interfaces/http/flight/mappers/flight-response';
+import { FlightMapper } from '@flight/interfaces/http/flight/mappers/flight';
 
 @Controller('flight')
 export class FlightController {

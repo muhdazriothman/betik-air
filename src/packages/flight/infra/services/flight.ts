@@ -3,8 +3,8 @@ import { Injectable } from '@nestjs/common';
 import axios from 'axios';
 
 import { Flight, FlightLeg, FlightSegment } from '@flight/domain/entities/flight';
-import { FlightService, FlightSearchParams } from '@flight/domain/services/flight-data-service';
-import { SearchFlightApiResponse } from '@flight/infra/api/search-flight-api-response';
+import { FlightService, FlightSearchParams } from '@flight/domain/services/flight';
+import { SearchFlightResponse } from '@flight/infra/api/search-flight-response';
 
 @Injectable()
 export class FlightServiceImpl implements FlightService {
@@ -91,7 +91,7 @@ export class FlightServiceImpl implements FlightService {
         }
     }
 
-    static getMockFlight(): SearchFlightApiResponse {
+    static getMockFlight(): SearchFlightResponse {
         return {
             "data": {
                 "accommodations": {

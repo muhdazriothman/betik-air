@@ -3,7 +3,7 @@ import { Injectable, Inject, BadRequestException, BadGatewayException } from '@n
 import { DateTime } from 'luxon';
 
 import { Flight } from '@flight/domain/entities/flight';
-import { FlightService } from '@flight/domain/services/flight-data-service';
+import { FlightService } from '@flight/domain/services/flight';
 import { SearchFlightDto } from '@flight/interfaces/http/flight/dtos/search-flight';
 
 import { DateValidator } from '@common/utils/date';

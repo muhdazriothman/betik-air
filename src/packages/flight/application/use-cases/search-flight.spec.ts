@@ -10,7 +10,7 @@ import {
     ShouldApplyDiscountParams
 } from '@flight/application/use-cases/search-flight';
 
-import { FlightService } from '@flight/domain/services/flight-data-service';
+import { FlightService } from '@flight/domain/services/flight';
 
 import {
     DateValidator,
