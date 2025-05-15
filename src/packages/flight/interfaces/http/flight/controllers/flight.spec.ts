@@ -2,7 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { FlightController } from '@flight/interfaces/http/flight/controllers/flight';
 import { SearchFlightUseCase } from '@flight/application/use-cases/search-flight';
+import { FlightMapper } from '@flight/interfaces/http/flight/mappers/flight-response';
 
+import { FlightFixture } from '@test/fixture/flight';
 import { Flight } from '@flight/domain/entities/flight';
 
 describe('@flight/interfaces/http/flight/controllers/flight', () => {
@@ -31,7 +33,19 @@ describe('@flight/interfaces/http/flight/controllers/flight', () => {
         expect(controller).toBeDefined();
     });
 
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    let toListDtoSpy: jest.SpyInstance;
+
+    const flights: Flight[] = [FlightFixture.getFlightEntity({})];
+
     describe('#searchFlight', () => {
+        beforeEach(() => {
+            toListDtoSpy = jest.spyOn(FlightMapper, 'toListDto');
+        });
+
         it('should call searchFlightUseCase.execute with query params', async () => {
             const query = {
                 departureDate: '20-03-2024',
@@ -42,13 +56,17 @@ describe('@flight/interfaces/http/flight/controllers/flight', () => {
                 destinationId: '2',
             };
 
-            const mockFlight = [{} as Flight];
-            searchFlightUseCase.execute.mockResolvedValue(mockFlight);
+
+            searchFlightUseCase.execute.mockResolvedValue(flights);
 
             const result = await controller.searchFlight(query);
 
             expect(searchFlightUseCase.execute).toHaveBeenCalledWith(query);
-            expect(result).toBe(mockFlight);
+            expect(toListDtoSpy).toHaveBeenCalledWith(flights);
+
+            const expectedResponse = toListDtoSpy.mock.results[0].value;
+
+            expect(result).toBe(expectedResponse);
         });
     });
 });

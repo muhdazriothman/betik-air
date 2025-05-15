@@ -1,6 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common';
 
 import { SearchFlightUseCase } from '@flight/application/use-cases/search-flight';
+import { FlightMapper } from '@flight/interfaces/http/flight/mappers/flight-response';
 
 import { SearchFlightDto } from '@flight/interfaces/http/flight/dtos/search-flight';
 
@@ -12,6 +13,7 @@ export class FlightController {
 
     @Get('search')
     async searchFlight(@Query() query: SearchFlightDto) {
-        return this.searchFlightUseCase.execute(query);
+        const flights = await this.searchFlightUseCase.execute(query);
+        return FlightMapper.toListDto(flights);
     }
 }
