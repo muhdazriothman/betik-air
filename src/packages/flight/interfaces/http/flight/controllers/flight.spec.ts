@@ -46,7 +46,7 @@ describe('@flight/interfaces/http/flight/controllers/flight', () => {
             toListDtoSpy = jest.spyOn(FlightMapper, 'toListDto');
         });
 
-        it('should call searchFlightUseCase.execute with query params', async () => {
+        it('should call searchFlightUseCase.execute with query params and return formatted response', async () => {
             const query = {
                 departureDate: '2024-03-20',
                 returnDate: '2024-03-25',
@@ -56,7 +56,6 @@ describe('@flight/interfaces/http/flight/controllers/flight', () => {
                 destinationId: '2',
             };
 
-
             searchFlightUseCase.execute.mockResolvedValue(flights);
 
             const result = await controller.searchFlight(query);
@@ -64,9 +63,13 @@ describe('@flight/interfaces/http/flight/controllers/flight', () => {
             expect(searchFlightUseCase.execute).toHaveBeenCalledWith(query);
             expect(toListDtoSpy).toHaveBeenCalledWith(flights);
 
-            const expectedResponse = toListDtoSpy.mock.results[0].value;
+            const mappedFlights = toListDtoSpy.mock.results[0].value;
+            const expectedResponse = {
+                statusCode: 200,
+                data: mappedFlights
+            };
 
-            expect(result).toBe(expectedResponse);
+            expect(result).toEqual(expectedResponse);
         });
     });
 });

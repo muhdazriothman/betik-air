@@ -15,6 +15,9 @@ export class FlightController {
     @UseGuards(JwtAuthGuard)
     async searchFlight(@Query() query: SearchFlightDto) {
         const flights = await this.searchFlightUseCase.execute(query);
-        return FlightMapper.toListDto(flights);
+        return {
+            statusCode: 200,
+            data: FlightMapper.toListDto(flights),
+        };
     }
 }

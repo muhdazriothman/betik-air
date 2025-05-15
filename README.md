@@ -65,10 +65,13 @@ The API uses JWT for authentication. To authenticate:
    }
    ```
 
-2. You will receive a JWT token in response:
+2. You will receive a response with the JWT token:
    ```json
    {
-     "accessToken": "eyJhbGciOiJIUzI1NiIsInR5..."
+     "statusCode": 200,
+     "data": {
+       "accessToken": "eyJhbGciOiJIUzI1NiIsInR5..."
+     }
    }
    ```
 
@@ -81,12 +84,38 @@ The API uses JWT for authentication. To authenticate:
 
 API documentation is available in OpenAPI/Swagger format. You can view the raw Swagger file at: `swagger.yml` in the project root.
 
+## 🔄 Flow Diagram
+
+A visual representation of the authentication and flight search flow is available at:
+[Search Flight Flow Diagram](https://whimsical.com/search-flight-flow-diagram-BEUc6B2CVEUpXxtukqifTp)
+
 ### Available Endpoints
 
 | Method | Endpoint         | Description                   | Authentication |
 |--------|------------------|-------------------------------|----------------|
 | POST   | /auth/login      | Authenticate user             | No             |
 | GET    | /flight/search   | Search for flights            | Yes            |
+
+### Response Format
+
+All API responses follow a consistent format:
+
+#### Success Response
+```json
+{
+  "statusCode": 200,
+  "data": { /* Response data */ }
+}
+```
+
+#### Error Response
+```json
+{
+  "message": "Error message",
+  "error": "Error type",
+  "statusCode": 401
+}
+```
 
 ### Flight Search Parameters
 
@@ -102,4 +131,33 @@ The `/flight/search` endpoint accepts the following query parameters:
 Example request:
 ```
 GET /flight/search?departureDate=2025-05-15&returnDate=2025-05-27&origin=KUL&originId=1&destination=SIN&destinationId=2
+```
+
+Example response:
+```json
+{
+  "statusCode": 200,
+  "data": [
+    {
+      "id": "flight-id",
+      "legs": [
+        {
+          "arrival": "2025-05-18T15:30:00",
+          "departure": "2025-05-18T09:15:00",
+          "originCode": "KUL",
+          "originName": "Kuala Lumpur International",
+          "destinationCode": "SIN",
+          "destinationName": "Singapore Changi",
+          "durationInMinutes": 135,
+          "stopCount": 0,
+          "segments": [/* segment details */]
+        }
+      ],
+      "price": 250,
+      "priceFormatted": "$250",
+      "priceAfterDiscount": 225,
+      "priceAfterDiscountFormatted": "$225"
+    }
+  ]
+}
 ```

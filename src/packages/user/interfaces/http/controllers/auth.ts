@@ -8,6 +8,10 @@ export class AuthController {
 
     @Post('login')
     async login(@Body() loginDto: LoginDto) {
-        return this.loginUseCase.execute(loginDto);
+        const token = await this.loginUseCase.execute(loginDto);
+        return {
+            statusCode: 200,
+            data: token,
+        };
     }
 }

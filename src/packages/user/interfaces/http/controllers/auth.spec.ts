@@ -25,19 +25,23 @@ describe('@user/interfaces/http/controllers/auth', () => {
     });
 
     describe('#login', () => {
-        it('should call LoginUseCase.execute and return its result', async () => {
+        it('should call LoginUseCase.execute and return formatted response', async () => {
             const loginDto: LoginDto = {
                 username: 'testuser',
                 password: 'password123'
             };
 
-            const expectedResult = { accessToken: 'jwt-token' };
+            const tokenResult = { accessToken: 'jwt-token' };
+            const expectedResponse = {
+                statusCode: 200,
+                data: tokenResult
+            };
 
-            (loginUseCase.execute as jest.Mock).mockResolvedValue(expectedResult);
+            (loginUseCase.execute as jest.Mock).mockResolvedValue(tokenResult);
 
             const result = await authController.login(loginDto);
 
-            expect(result).toBe(expectedResult);
+            expect(result).toEqual(expectedResponse);
             expect(loginUseCase.execute).toHaveBeenCalledWith(loginDto);
         });
 

@@ -35,11 +35,31 @@ paths:
               schema:
                 type: object
                 properties:
-                  accessToken:
-                    type: string
-                    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                  statusCode:
+                    type: integer
+                    example: 200
+                  data:
+                    type: object
+                    properties:
+                      accessToken:
+                        type: string
+                        example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
         '401':
           description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Invalid credentials"
+                  error:
+                    type: string
+                    example: "Unauthorized"
+                  statusCode:
+                    type: integer
+                    example: 401
 
   /flight/search:
     get:
@@ -89,68 +109,102 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    id:
-                      type: string
-                      example: "11442-2505121038--32573-1-12240-2505121708|12240-2505152130--32573-1-12712-2505161528"
-                    legs:
-                      type: array
-                      items:
-                        type: object
-                        properties:
-                          arrival:
-                            type: string
-                            format: date-time
-                          departure:
-                            type: string
-                            format: date-time
-                          originCode:
-                            type: string
-                          originName:
-                            type: string
-                          destinationCode:
-                            type: string
-                          destinationName:
-                            type: string
-                          durationInMinutes:
-                            type: integer
-                          stopCount:
-                            type: integer
-                          segments:
-                            type: array
-                            items:
-                              type: object
-                              properties:
-                                arrival:
-                                  type: string
-                                  format: date-time
-                                departure:
-                                  type: string
-                                  format: date-time
-                                originCode:
-                                  type: string
-                                originName:
-                                  type: string
-                                destinationCode:
-                                  type: string
-                                destinationName:
-                                  type: string
-                                carrier:
-                                  type: string
-                                flightNumber:
-                                  type: string
-                    price:
-                      type: number
-                    priceFormatted:
-                      type: string
-                    priceAfterDiscount:
-                      type: number
-                    priceAfterDiscountFormatted:
-                      type: string
+                type: object
+                properties:
+                  statusCode:
+                    type: integer
+                    example: 200
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: "11442-2505121038--32573-1-12240-2505121708|12240-2505152130--32573-1-12712-2505161528"
+                        legs:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              arrival:
+                                type: string
+                                format: date-time
+                              departure:
+                                type: string
+                                format: date-time
+                              originCode:
+                                type: string
+                              originName:
+                                type: string
+                              destinationCode:
+                                type: string
+                              destinationName:
+                                type: string
+                              durationInMinutes:
+                                type: integer
+                              stopCount:
+                                type: integer
+                              segments:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    arrival:
+                                      type: string
+                                      format: date-time
+                                    departure:
+                                      type: string
+                                      format: date-time
+                                    originCode:
+                                      type: string
+                                    originName:
+                                      type: string
+                                    destinationCode:
+                                      type: string
+                                    destinationName:
+                                      type: string
+                                    carrier:
+                                      type: string
+                                    flightNumber:
+                                      type: string
+                        price:
+                          type: number
+                        priceFormatted:
+                          type: string
+                        priceAfterDiscount:
+                          type: number
+                        priceAfterDiscountFormatted:
+                          type: string
         '400':
           description: Invalid request parameters
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "departureDate must be in the future"
+                  error:
+                    type: string
+                    example: "Bad Request"
+                  statusCode:
+                    type: integer
+                    example: 400
         '500':
           description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Internal server error"
+                  error:
+                    type: string
+                    example: "Internal Server Error"
+                  statusCode:
+                    type: integer
+                    example: 500
