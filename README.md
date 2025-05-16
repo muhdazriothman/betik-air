@@ -23,6 +23,13 @@ An API for searching and booking flights built with NestJS and TypeScript. This 
    npm install
    ```
 
+3. Environment Setup:
+
+   Rename the `.env.example` file to `.env` before running the project:
+   ```bash
+   mv .env.example .env
+   ```
+
 ## 🏃‍♂️ Running the Application
 
 ### Development Mode
