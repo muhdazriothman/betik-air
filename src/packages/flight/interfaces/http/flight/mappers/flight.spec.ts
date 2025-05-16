@@ -1,6 +1,6 @@
 import { Flight, FlightLeg, FlightSegment } from '@flight/domain/entities/flight';
-import { FlightMapper, FlighDto, FlightLegDto, FlightSegmentDto } from '@flight/interfaces/http/flight/mappers/flight';
-import { FlightFixture } from '@test/fixture/flight';
+import { FlightMapper } from '@flight/interfaces/http/flight/mappers/flight';
+import { FlightFixture } from 'test/fixture/flight';
 
 describe('@flight/interfaces/http/flight/mappers/flight', () => {
     let flight: Flight;

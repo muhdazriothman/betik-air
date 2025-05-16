@@ -4,7 +4,7 @@ import { FlightController } from '@flight/interfaces/http/flight/controllers/fli
 import { SearchFlightUseCase } from '@flight/application/use-cases/search-flight';
 import { FlightMapper } from '@flight/interfaces/http/flight/mappers/flight';
 
-import { FlightFixture } from '@test/fixture/flight';
+import { FlightFixture } from 'test/fixture/flight';
 import { Flight } from '@flight/domain/entities/flight';
 
 describe('@flight/interfaces/http/flight/controllers/flight', () => {
