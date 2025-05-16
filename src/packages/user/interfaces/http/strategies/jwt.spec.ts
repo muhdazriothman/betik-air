@@ -1,10 +1,16 @@
 import { JwtStrategy } from '@user/interfaces/http/strategies/jwt';
+import { ConfigService } from '@nestjs/config';
 
 describe('@user/interfaces/http/strategies/jwt', () => {
     let jwtStrategy: JwtStrategy;
+    let configService: ConfigService;
 
     beforeEach(() => {
-        jwtStrategy = new JwtStrategy();
+        configService = {
+            get: jest.fn().mockReturnValue('test-jwt-secret')
+        } as any;
+
+        jwtStrategy = new JwtStrategy(configService);
     });
 
     it('should be properly instantiated', () => {
@@ -13,8 +19,18 @@ describe('@user/interfaces/http/strategies/jwt', () => {
     });
 
     describe('#constructor', () => {
+        it('should throw error if JWT_SECRET is not set', () => {
+            const configServiceWithoutSecret = {
+                get: jest.fn().mockReturnValue(undefined)
+            } as any;
+
+            expect(() => new JwtStrategy(configServiceWithoutSecret))
+                .toThrow('JWT_SECRET environment variable is not set');
+        });
+
         it('should be configured with the correct options', () => {
             expect(jwtStrategy).toBeDefined();
+            expect(configService.get).toHaveBeenCalledWith('JWT_SECRET');
         });
     });
 

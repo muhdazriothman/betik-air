@@ -6,13 +6,21 @@ import { LoginUseCase } from '@user/application/use-cases/login';
 import { JwtService as NestJwtService } from '@nestjs/jwt';
 import { JwtServiceImpl } from '@user/infra/services/jwt';
 import { HashServiceImpl } from '@user/infra/services/hash';
+import { ConfigModule } from '@nestjs/config';
 
 describe('@modules/auth', () => {
     let moduleRef: any;
 
     beforeEach(async () => {
         moduleRef = await Test.createTestingModule({
-            imports: [AuthModule],
+            imports: [
+                ConfigModule.forRoot({
+                    load: [() => ({
+                        JWT_SECRET: 'test-jwt-secret'
+                    })]
+                }),
+                AuthModule
+            ],
         }).compile();
     });
 

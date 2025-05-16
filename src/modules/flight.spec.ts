@@ -3,6 +3,7 @@ import { FlightModule } from '@modules/flight';
 import { FlightController } from '@flight/interfaces/http/flight/controllers/flight';
 import { SearchFlightUseCase } from '@flight/application/use-cases/search-flight';
 import { FlightServiceImpl } from '@flight/infra/services/flight';
+import { HttpModule } from '@nestjs/axios';
 
 describe('@modules/flight', () => {
     let moduleRef: any;
@@ -18,9 +19,10 @@ describe('@modules/flight', () => {
     });
 
     describe('imports', () => {
-        it('should have empty imports', () => {
+        it('should have HttpModule import', () => {
             const metadata = Reflect.getMetadata('imports', FlightModule);
-            expect(metadata).toEqual([]);
+            const hasHttpModule = metadata.some((mod: any) => mod === HttpModule);
+            expect(hasHttpModule).toBe(true);
         });
     });
 
