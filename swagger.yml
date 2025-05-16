@@ -1,15 +1,23 @@
 openapi: 3.0.3
 info:
-  title: Flight Search API
+  title: Air Travel API
   version: 1.0.0
-  description: API to search for round-trip flights
+  description: API for air travel services including flight search, booking, and management
 
 servers:
   - url: http://localhost:3000
 
+tags:
+  - name: Authentication
+    description: Authentication related endpoints
+  - name: Flight
+    description: Flight related endpoints
+
 paths:
   /auth/login:
     post:
+      tags:
+        - Authentication
       summary: Login with credentials
       requestBody:
         required: true
@@ -63,6 +71,8 @@ paths:
 
   /flight/search:
     get:
+      tags:
+        - Flight
       summary: Search for round-trip flights
       parameters:
         - name: departureDate
